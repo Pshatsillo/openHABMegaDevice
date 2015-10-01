@@ -12,6 +12,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
@@ -165,6 +167,7 @@ public class MegaDeviceBinding extends
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand({},{}) is called!", itemName,
 				command);
+		SendCommand(itemName, command.toString());
 	}
 
 	/**
@@ -172,11 +175,14 @@ public class MegaDeviceBinding extends
 	 */
 	@Override
 	protected void internalReceiveUpdate(String itemName, State newState) {
+
 		// the code being executed when a state was sent on the openHAB
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
 				newState);
+		SendCommand(itemName, newState.toString());
+
 	}
 
 	public void setEP() {
@@ -187,6 +193,51 @@ public class MegaDeviceBinding extends
 	public void setProviders() {
 		this.megaproviders = providers;
 
+	}
+
+	private void SendCommand(String itemName, String newState) {
+		int state = 0;
+		HttpURLConnection con;
+		for (MegaDeviceBindingProvider provider : providers) {
+			logger.debug("scanning");
+			for (String itemname : provider.getItemNames()) {
+				logger.debug(itemname);
+				if (itemname.equals(itemName)) {
+
+					if (newState.equals("ON")) {
+						state = 1;
+					} else if (newState.equals("OFF")) {
+						state = 0;
+					}
+				}
+
+				URL MegaURL;
+				String Result = "http://" + provider.getIP(itemName) + "/"
+						+ provider.password(itemName) + "/?pt="+provider.getPORT(itemName)+"&cmd="
+						+ provider.getPORT(itemName) + ":" + state;
+				logger.debug(Result);
+				try {
+					MegaURL = new URL(Result);
+					con = (HttpURLConnection) MegaURL.openConnection();
+					// optional default is GET
+					con.setRequestMethod("GET");
+					// add request header
+					con.setRequestProperty("User-Agent", "Mozilla/5.0");
+					if (con.getResponseCode() == 200) logger.debug("OK");
+					con.disconnect();
+				} catch (MalformedURLException e) {
+					logger.debug("1" + e);
+					e.printStackTrace();
+				} catch (ProtocolException e) {
+					logger.debug("2" + e);
+					e.printStackTrace();
+				} catch (IOException e) {
+					logger.debug(e.getLocalizedMessage());
+					// return false;
+					// e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public void ScanPorts() {
