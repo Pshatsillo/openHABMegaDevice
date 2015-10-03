@@ -1,16 +1,44 @@
 Пока работает только на порту 8989
 Пока только как Switch
 
-
 т.е. в настройках меги указываем айпи сервера 192.168.0.1:8989
 
 имя скрипта - любое
 
 в OpenHAB *.items 
 
-Switch Megad "Свет на кухне" {megadevice="sec:localhost:9"}
+Switch MegaDeviceButton_kitchen 	"Kitchen button" {megadevice="sec:192.168.0.17:0"}
+Switch KitchenLamp "Свет над кухней" (Hall, Hall_Lights) {megadevice="sec:192.168.0.17:9"}
 
 {megadevice="пароль на мегу : айпишник меги : номер порта меги"}
+
+
+Пример Mega.rules
+
+rule "MegadeviceKitchenButtonPress"
+when Item MegaDeviceButton_kitchen changed to ON
+then if (KitchenLamp.state == OFF) {
+	postUpdate(KitchenLamp, ON)
+	sendCommand(KitchenLamp, ON)
+} else {
+	postUpdate(KitchenLamp, OFF)
+	sendCommand(KitchenLamp, OFF)
+}
+end
+
+rule "MegaDeviceBellButtonPress"
+when Item MegaDeviceBell_Button changed to ON
+then
+	postUpdate(Bell, ON)
+	sendCommand(Bell, ON)
+end
+
+rule "MegaDeviceBellButtonRelease"
+when Item MegaDeviceBell_Button changed to OFF
+then
+	postUpdate(Bell, OFF)
+	sendCommand(Bell, OFF)
+end
 
 пример с таймером:
 
@@ -42,3 +70,13 @@ var int Stop = now.getMillisOfDay
  		logInfo("Timer >3 seconds", result.toString)
  	}
 end
+
+Пример default.siemaps
+
+sitemap default label= "Main Screen"{
+	
+	Frame label="Кухня" {
+		Switch item=KitchenLamp
+	}
+}
+
