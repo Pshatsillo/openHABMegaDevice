@@ -10,6 +10,7 @@
 Switch MegaDeviceButton_kitchen 	"Kitchen button" {megadevice="sec:192.168.0.17:0"}
 Switch KitchenLamp "Свет над кухней" (Hall, Hall_Lights) {megadevice="sec:192.168.0.17:9"}
 </code>
+<br>
 {megadevice="пароль на мегу : айпишник меги : номер порта меги"}
 
 <br>
