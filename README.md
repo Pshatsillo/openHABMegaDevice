@@ -78,7 +78,6 @@ end
 <br>
 <code>
 sitemap default label= "Main Screen"{
-	
 	Frame label="Кухня" {
 		Switch item=KitchenLamp
 	}
