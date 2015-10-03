@@ -181,7 +181,7 @@ public class MegaDeviceBinding extends
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
 				newState);
-		SendCommand(itemName, newState.toString());
+		//SendCommand(itemName, newState.toString());
 
 	}
 
@@ -201,7 +201,8 @@ public class MegaDeviceBinding extends
 		for (MegaDeviceBindingProvider provider : providers) {
 			logger.debug("scanning");
 			for (String itemname : provider.getItemNames()) {
-				logger.debug(itemname);
+				//logger.debug(itemname);
+				//logger.debug(itemName);
 				if (itemname.equals(itemName)) {
 
 					if (newState.equals("ON")) {
@@ -209,32 +210,33 @@ public class MegaDeviceBinding extends
 					} else if (newState.equals("OFF")) {
 						state = 0;
 					}
-				}
 
-				URL MegaURL;
-				String Result = "http://" + provider.getIP(itemName) + "/"
-						+ provider.password(itemName) + "/?pt="+provider.getPORT(itemName)+"&cmd="
-						+ provider.getPORT(itemName) + ":" + state;
-				logger.debug(Result);
-				try {
-					MegaURL = new URL(Result);
-					con = (HttpURLConnection) MegaURL.openConnection();
-					// optional default is GET
-					con.setRequestMethod("GET");
-					// add request header
-					con.setRequestProperty("User-Agent", "Mozilla/5.0");
-					if (con.getResponseCode() == 200) logger.debug("OK");
-					con.disconnect();
-				} catch (MalformedURLException e) {
-					logger.debug("1" + e);
-					e.printStackTrace();
-				} catch (ProtocolException e) {
-					logger.debug("2" + e);
-					e.printStackTrace();
-				} catch (IOException e) {
-					logger.debug(e.getLocalizedMessage());
-					// return false;
-					// e.printStackTrace();
+					URL MegaURL;
+					String Result = "http://" + provider.getIP(itemName) + "/"
+							+ provider.password(itemName) + "/?cmd="
+							+ provider.getPORT(itemName) + ":" + state;
+					logger.info(Result);
+					try {
+						MegaURL = new URL(Result);
+						con = (HttpURLConnection) MegaURL.openConnection();
+						// optional default is GET
+						con.setRequestMethod("GET");
+						// add request header
+						con.setRequestProperty("User-Agent", "Mozilla/5.0");
+						if (con.getResponseCode() == 200)
+							logger.debug("OK");
+						con.disconnect();
+					} catch (MalformedURLException e) {
+						logger.debug("1" + e);
+						e.printStackTrace();
+					} catch (ProtocolException e) {
+						logger.debug("2" + e);
+						e.printStackTrace();
+					} catch (IOException e) {
+						logger.debug(e.getLocalizedMessage());
+						// return false;
+						// e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -288,11 +290,11 @@ public class MegaDeviceBinding extends
 		logger.debug("action at address ->> " + hostAddress + " On_OFF: "
 				+ onoff);
 
-		for (int i = 0; getCommands.length > i; i++) {
-			logger.debug(" value: " + i + "  " + getCommands[i]);
-		}
+		//for (int i = 0; getCommands.length > i; i++) {
+		//	logger.debug(" value: " + i + "  " + getCommands[i]);
+		//}
 		for (MegaDeviceBindingProvider provider : megaproviders) {
-			logger.debug(" scanning: ");
+			//logger.debug(" scanning: ");
 			for (String itemName : provider.getItemNames()) {
 				if (provider.getIP(itemName).equals(hostAddress)
 						&& provider.getPORT(itemName).equals(getCommands[2])) {
