@@ -6,15 +6,15 @@
 имя скрипта - любое
 
 в OpenHAB *.items 
-
+<code>
 Switch MegaDeviceButton_kitchen 	"Kitchen button" {megadevice="sec:192.168.0.17:0"}
 Switch KitchenLamp "Свет над кухней" (Hall, Hall_Lights) {megadevice="sec:192.168.0.17:9"}
-
+</code>
 {megadevice="пароль на мегу : айпишник меги : номер порта меги"}
 
 
 Пример Mega.rules
-
+<code>
 rule "MegadeviceKitchenButtonPress"
 when Item MegaDeviceButton_kitchen changed to ON
 then if (KitchenLamp.state == OFF) {
@@ -39,9 +39,9 @@ then
 	postUpdate(Bell, OFF)
 	sendCommand(Bell, OFF)
 end
-
+</code>
 пример с таймером:
-
+<code>
 
 var int Timeout
 
@@ -70,13 +70,14 @@ var int Stop = now.getMillisOfDay
  		logInfo("Timer >3 seconds", result.toString)
  	}
 end
-
+</code>
 Пример default.siemaps
 
+<code>
 sitemap default label= "Main Screen"{
 	
 	Frame label="Кухня" {
 		Switch item=KitchenLamp
 	}
 }
-
+</code>
