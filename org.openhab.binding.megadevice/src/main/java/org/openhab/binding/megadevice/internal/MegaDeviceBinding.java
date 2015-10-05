@@ -199,7 +199,7 @@ public class MegaDeviceBinding extends
 		int state = 0;
 		HttpURLConnection con;
 		for (MegaDeviceBindingProvider provider : providers) {
-			logger.debug("scanning");
+			logger.debug("SendCommand exec");
 			for (String itemname : provider.getItemNames()) {
 				//logger.debug(itemname);
 				//logger.debug(itemName);
