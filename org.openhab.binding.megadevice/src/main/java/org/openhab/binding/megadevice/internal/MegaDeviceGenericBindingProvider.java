@@ -49,7 +49,7 @@ public class MegaDeviceGenericBindingProvider extends
 							+ item.getName()
 							+ "' is of type '"
 							+ item.getClass().getSimpleName()
-							+ "', only Switch- and DimmerItems are allowed - please check your *.items configuration");
+							+ "', only Switch-, DimmerItems or Number are allowed - please check your *.items configuration");
 		}
 	}
 
@@ -91,31 +91,22 @@ public class MegaDeviceGenericBindingProvider extends
 
 	@Override
 	public String getIP(String itemName) {
-		// logger.debug("Megadevice ->>> getItemConfig: "+ itemName);
 		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
 				.get(itemName);
-		// logger.debug("Megadevice ->>> Item: "+ itemName +" config -> " +
-		// config.ip);
 		return config.ip;
 	}
 
 	@Override
 	public String getPORT(String itemName) {
-		// logger.debug("Megadevice ->>> getItemConfig: "+ itemName);
 		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
 				.get(itemName);
-		// logger.debug("Megadevice ->>> Item: "+ itemName +" config -> " +
-		// config.port);
 		return config.port;
 	}
 
 	@Override
 	public String password(String itemName) {
-		// logger.debug("Megadevice ->>> getItemConfig: "+ itemName);
 		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
 				.get(itemName);
-		// logger.debug("Megadevice ->>> Item: "+ itemName +" config -> " +
-		// config.password);
 		return config.password;
 	}
 

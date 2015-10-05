@@ -15,7 +15,7 @@ public class MegadeviceHttpServer extends Thread {
 	public void run() {
 		ServerSocket ss = null;
 
-		logger.info("Starting http...");
+		logger.info("Starting MegaHttpServer at port 8989...");
 
 		try {
 			ss = new ServerSocket(8989);
@@ -29,7 +29,6 @@ public class MegadeviceHttpServer extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			// System.err.println("Client accepted");
 			new Thread(new MegaDeviceHttpSocket(s)).start();
 		}
 	}

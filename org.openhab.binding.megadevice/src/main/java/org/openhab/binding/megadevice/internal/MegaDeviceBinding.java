@@ -181,7 +181,7 @@ public class MegaDeviceBinding extends
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
 				newState);
-		//SendCommand(itemName, newState.toString());
+		// SendCommand(itemName, newState.toString());
 
 	}
 
@@ -201,8 +201,6 @@ public class MegaDeviceBinding extends
 		for (MegaDeviceBindingProvider provider : providers) {
 			logger.debug("SendCommand exec");
 			for (String itemname : provider.getItemNames()) {
-				//logger.debug(itemname);
-				//logger.debug(itemName);
 				if (itemname.equals(itemName)) {
 
 					if (newState.equals("ON")) {
@@ -234,7 +232,6 @@ public class MegaDeviceBinding extends
 						e.printStackTrace();
 					} catch (IOException e) {
 						logger.debug(e.getLocalizedMessage());
-						// return false;
 						// e.printStackTrace();
 					}
 				}
@@ -289,12 +286,7 @@ public class MegaDeviceBinding extends
 			hostAddress = "localhost";
 		logger.debug("action at address ->> " + hostAddress + " On_OFF: "
 				+ onoff);
-
-		//for (int i = 0; getCommands.length > i; i++) {
-		//	logger.debug(" value: " + i + "  " + getCommands[i]);
-		//}
 		for (MegaDeviceBindingProvider provider : megaproviders) {
-			//logger.debug(" scanning: ");
 			for (String itemName : provider.getItemNames()) {
 				if (provider.getIP(itemName).equals(hostAddress)
 						&& provider.getPORT(itemName).equals(getCommands[2])) {
