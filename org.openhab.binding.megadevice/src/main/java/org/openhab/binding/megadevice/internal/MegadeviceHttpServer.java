@@ -8,17 +8,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MegadeviceHttpServer extends Thread {
-
 	private static Logger logger = LoggerFactory
 			.getLogger(MegaDeviceActivator.class);
+	private static int portnumber = 8989;
 
 	public void run() {
 		ServerSocket ss = null;
 
-		logger.info("Starting MegaHttpServer at port 8989...");
+		logger.info("Starting MegaHttpServer at " + portnumber + " port");
 
 		try {
-			ss = new ServerSocket(8989);
+			ss = new ServerSocket(portnumber);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -32,5 +32,10 @@ public class MegadeviceHttpServer extends Thread {
 			new Thread(new MegaDeviceHttpSocket(s)).start();
 		}
 	}
+	
+	public static void setPort(int port){
+		portnumber = port;
+	}
+	
 
 }

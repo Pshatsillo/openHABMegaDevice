@@ -88,9 +88,19 @@ public class MegaDeviceBinding extends
 			refreshInterval = Long.parseLong(refreshIntervalString);
 		}
 
-		// read further config parameters here ...
-
+		String portNumber = (String) configuration.get("httpserverport");
+		int portnumber = 0;
+		if (StringUtils.isNotBlank(portNumber)) {
+			portnumber = Integer.parseInt(portNumber);
+		}
 		setProperlyConfigured(true);
+
+		// logger.debug("READCONFIG ------------->>>>" + portnumber);
+		if (portnumber > 0) {
+			MegadeviceHttpServer.setPort(portnumber);
+		}
+			new MegadeviceHttpServer().start();
+		
 	}
 
 	/**

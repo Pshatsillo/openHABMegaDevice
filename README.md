@@ -83,3 +83,12 @@ sitemap default label= "Main Screen"{
 	}
 }
 </code>
+
+Чтобы изменить номер порта втавляем эти строчки в конец конфига Openhub <br>
+
+<br>
+################################ Megadevice Binding ####################################### <br>
+#<br>
+# IP address of a Http port for megadevice defaut value is 8989 <br>
+# megadevice:httpserverport=8585 <br>
+

@@ -14,7 +14,7 @@ public class MegaDeviceActivator implements BundleActivator {
 	public void start(BundleContext context) throws Exception {
 
 		logger.info("MegaDevice binding has been started.");
-		new MegadeviceHttpServer().start();
+		//new MegadeviceHttpServer().start();
 	}
 
 	@Override
