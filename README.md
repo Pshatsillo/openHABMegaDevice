@@ -1,21 +1,17 @@
-Пока работает только на порту 8989
-Пока только как Switch
-<br>
-т.е. в настройках меги указываем айпи сервера 192.168.0.1:8989
-<br>
-имя скрипта - любое
-<br>
-в OpenHAB *.items <br>
-<code>
-Switch MegaDeviceButton_kitchen 	"Kitchen button" {megadevice="sec:192.168.0.17:0"}<br>
-Switch KitchenLamp "Свет над кухней" (Hall, Hall_Lights) {megadevice="sec:192.168.0.17:9"}<br>
-</code>
-<br>
-{megadevice="пароль на мегу : айпишник меги : номер порта меги"}
+ - Пока только как Switch 
+ - В настройках меги указываем айпи сервера 192.168.0.1:8989 
+ - имя скрипта - любое
 
-<br>
-Пример Mega.rules <br>
-<code>
+### в OpenHAB *.items:
+```javascript
+Switch MegaDeviceButton_kitchen 	"Kitchen button" {megadevice="sec:192.168.0.17:0"}
+Switch KitchenLamp "Свет над кухней" (Hall, Hall_Lights) {megadevice="sec:192.168.0.17:9"}
+```
+```javascript
+{megadevice="пароль на мегу : айпишник меги : номер порта меги"}
+```
+#### Пример Mega.rules:
+```javascript
 rule "MegadeviceKitchenButtonPress"
 when Item MegaDeviceButton_kitchen changed to ON
 then if (KitchenLamp.state == OFF) {
@@ -40,11 +36,9 @@ then
 	postUpdate(Bell, OFF)
 	sendCommand(Bell, OFF)
 end
-</code>
-<br>
-пример с таймером: <br>
-<code>
-
+```
+### Пример с таймером:
+```javascript
 var int Timeout
 
 rule "Test"
@@ -72,23 +66,19 @@ var int Stop = now.getMillisOfDay
  		logInfo("Timer >3 seconds", result.toString)
  	}
 end
-</code>
-<br>
-Пример default.siemaps
-<br>
-<code>
+```
+### Пример default.siemaps:
+```javascript
 sitemap default label= "Main Screen"{
 	Frame label="Кухня" {
 		Switch item=KitchenLamp
 	}
 }
-</code>
+```
 
-Чтобы изменить номер порта втавляем эти строчки в конец конфига Openhub <br>
-
-<br>
-################################ Megadevice Binding ####################################### <br>
-#<br>
-# IP address of a Http port for megadevice defaut value is 8989 <br>
-# megadevice:httpserverport=8585 <br>
-
+### Чтобы изменить номер порта втавляем эти строчки в конец конфига Openhub:
+```javascript
+################################ Megadevice Binding #######################################
+#
+# IP address of a Http port for megadevice defaut value is 8989
+megadevice:httpserverport=8585
