@@ -28,7 +28,8 @@ public class MegaDeviceHttpSocket extends Thread {
 			this.is = s.getInputStream();
 			this.os = s.getOutputStream();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("ERROR: " + e.getMessage());
+			//e.printStackTrace();
 		}
 	}
 

@@ -11,31 +11,49 @@ public class MegadeviceHttpServer extends Thread {
 	private static Logger logger = LoggerFactory
 			.getLogger(MegaDeviceActivator.class);
 	private static int portnumber = 8989;
+	private static boolean isRunning = true;
+	private static ServerSocket ss = null;
 
 	public void run() {
-		ServerSocket ss = null;
 
 		logger.info("Starting MegaHttpServer at " + portnumber + " port");
 
 		try {
 			ss = new ServerSocket(portnumber);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.debug("ERROR -> " + e.getMessage());
+			// e.printStackTrace();
 		}
-		while (true) {
+		while (isRunning) {
 			Socket s = null;
 			try {
-				s = ss != null ? ss.accept() : null;
+				 s = ss != null ? ss.accept() : null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.debug("ERROR --> " + e.getMessage());
+				// e.printStackTrace();
 			}
-			new Thread(new MegaDeviceHttpSocket(s)).start();
+			if (!ss.isClosed()) {
+				new Thread(new MegaDeviceHttpSocket(s)).start();
+			}
 		}
 	}
-	
-	public static void setPort(int port){
+
+	public static void setPort(int port) {
 		portnumber = port;
 	}
-	
 
+	public static void setRunningState(boolean isRun) {
+		isRunning = isRun;
+		try {
+			logger.info("closing port");
+			ss.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static boolean getRunningState() {
+		return isRunning;
+	}
 }

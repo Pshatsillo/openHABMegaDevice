@@ -47,7 +47,6 @@ public class MegaDeviceBinding extends
 	private boolean isSetPublisher;
 
 	private static Collection<MegaDeviceBindingProvider> megaproviders = new CopyOnWriteArraySet<MegaDeviceBindingProvider>();
-
 	/**
 	 * The BundleContext. This is only valid when the bundle is ACTIVE. It is
 	 * set in the activate() method and must not be accessed anymore once the
@@ -94,12 +93,10 @@ public class MegaDeviceBinding extends
 			portnumber = Integer.parseInt(portNumber);
 		}
 		setProperlyConfigured(true);
-
-		// logger.debug("READCONFIG ------------->>>>" + portnumber);
 		if (portnumber > 0) {
 			MegadeviceHttpServer.setPort(portnumber);
 		}
-			new MegadeviceHttpServer().start();
+		new MegadeviceHttpServer().start();
 		
 	}
 
@@ -134,6 +131,9 @@ public class MegaDeviceBinding extends
 	 */
 	public void deactivate(final int reason) {
 		this.bundleContext = null;
+		
+		MegadeviceHttpServer.setRunningState(false);
+		
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
 	}
@@ -191,7 +191,6 @@ public class MegaDeviceBinding extends
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveUpdate({},{}) is called!", itemName,
 				newState);
-		// SendCommand(itemName, newState.toString());
 
 	}
 
@@ -209,7 +208,7 @@ public class MegaDeviceBinding extends
 		int state = 0;
 		HttpURLConnection con;
 		for (MegaDeviceBindingProvider provider : providers) {
-			logger.debug("SendCommand exec");
+			//logger.debug("SendCommand exec");
 			for (String itemname : provider.getItemNames()) {
 				if (itemname.equals(itemName)) {
 
