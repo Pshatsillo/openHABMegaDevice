@@ -294,12 +294,26 @@ public class MegaDeviceBinding extends
 	}
 
 	public void ScanPorts() {
+		String Result = "";
 		for (MegaDeviceBindingProvider provider : providers) {
+			
 			for (String itemName : provider.getItemNames()) {
 				try {
-					String Result = "http://" + provider.getIP(itemName) + "/"
-							+ provider.password(itemName) + "/?pt="
-							+ provider.getPORT(itemName) + "&cmd=get";
+					if(provider.getItemType(itemName).toString().contains("NumberItem")){
+						if(provider.getPORT(itemName).toString().contains("t")){
+							Result = "http://" + provider.getIP(itemName) + "/"
+									+ provider.password(itemName) + "/?tget=1";
+						} else {
+							Result = "http://" + provider.getIP(itemName) + "/"
+									+ provider.password(itemName) + "/?pt="
+									+ provider.getPORT(itemName) + "&cmd=get";
+						}
+					} else {
+						 Result = "http://" + provider.getIP(itemName) + "/"
+								+ provider.password(itemName) + "/?pt="
+								+ provider.getPORT(itemName) + "&cmd=get";
+					}
+					
 					URL obj = new URL(Result);
 					HttpURLConnection con = (HttpURLConnection) obj
 							.openConnection();
@@ -332,6 +346,9 @@ public class MegaDeviceBinding extends
 							ep.postUpdate(itemName, PercentType.valueOf(Integer
 									.toString(percent)));
 							logger.debug(itemName + " " + percent);
+						} else if (provider.getItemType(itemName).toString()
+								.contains("NumberItem")){
+							ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
 						}
 					}
 				} catch (IOException e) {
@@ -339,7 +356,7 @@ public class MegaDeviceBinding extends
 							+ provider.getIP(itemName) + " error: "
 							+ e.getLocalizedMessage());
 				}
-			}
+			} 
 		}
 	}
 
@@ -351,13 +368,15 @@ public class MegaDeviceBinding extends
 				+ onoff);
 		for (MegaDeviceBindingProvider provider : megaproviders) {
 			for (String itemName : provider.getItemNames()) {
-				if (provider.getIP(itemName).equals(hostAddress)
-						&& provider.getPORT(itemName).equals(getCommands[2])) {
-					if (provider.getItemType(itemName).toString()
-							.contains("SwitchItem")) {
-						logger.debug(" itemName: "
-								+ provider.getItemType(itemName));
+				if (provider.getItemType(itemName).toString().contains("SwitchItem")) {
+				if (provider.getIP(itemName).equals(hostAddress) && provider.getPORT(itemName).equals(getCommands[2])) {
+						logger.debug(" itemName: " + provider.getItemType(itemName));
 						ep.postUpdate(itemName, onoff);
+					}
+				}  else if (provider.getItemType(itemName).toString().contains("NumberItem")){
+					if (provider.getIP(itemName).equals(hostAddress) && provider.getPORT(itemName).equals("at")) {
+						logger.debug(" itemName: " + provider.getItemType(itemName));
+						ep.postUpdate(itemName, DecimalType.valueOf(getCommands[2]));
 					}
 				}
 			}

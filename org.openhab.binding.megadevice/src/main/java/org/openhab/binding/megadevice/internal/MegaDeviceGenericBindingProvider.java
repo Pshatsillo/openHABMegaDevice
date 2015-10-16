@@ -65,14 +65,12 @@ public class MegaDeviceGenericBindingProvider extends
 			MegaDeviceBindingConfig config = new MegaDeviceBindingConfig();
 			config.itemType = item.getClass();
 			String[] configParts = bindingConfig.trim().split(":");
-			if(item instanceof SwitchItem){
-				config.password = configParts.length > 0 ? configParts[0]
-						: "NO_Pass";
-				config.ip = configParts.length > 0 ? configParts[1] : "NO_IP";
-				config.port = configParts.length > 0 ? configParts[2] : "NO_PORT";
-			}
-			
-			
+			// if(item instanceof SwitchItem){
+			config.password = configParts.length > 0 ? configParts[0]
+					: "NO_Pass";
+			config.ip = configParts.length > 0 ? configParts[1] : "NO_IP";
+			config.port = configParts.length > 0 ? configParts[2] : "NO_PORT";
+			// } //else if (item instanceof NumberItem) {
 			addBindingConfig(item, config);
 		} else {
 			logger.warn("bindingConfig is NULL (item=" + item
