@@ -23,12 +23,16 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.megadevice.MegaDeviceBindingProvider;
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.PercentType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NumberType;
 
 /**
  * Implement this class if you are going create an actively polling service like
@@ -320,6 +324,15 @@ public class MegaDeviceBinding extends
 						ep.postUpdate(itemName, OnOffType.ON);
 					} else if (response.toString().contains("OFF")) {
 						ep.postUpdate(itemName, OnOffType.OFF);
+					} else {
+						if (provider.getItemType(itemName).toString()
+								.contains("DimmerItem")) {
+							int percent = (int) Math.round(Integer
+									.parseInt(response.toString()) / 2.55);
+							ep.postUpdate(itemName, PercentType.valueOf(Integer
+									.toString(percent)));
+							logger.debug(itemName + " " + percent);
+						}
 					}
 				} catch (IOException e) {
 					logger.debug("Connect to megadevice "
