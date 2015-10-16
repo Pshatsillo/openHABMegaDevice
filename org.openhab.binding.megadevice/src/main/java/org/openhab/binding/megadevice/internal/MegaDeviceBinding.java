@@ -97,7 +97,7 @@ public class MegaDeviceBinding extends
 			MegadeviceHttpServer.setPort(portnumber);
 		}
 		new MegadeviceHttpServer().start();
-		
+
 	}
 
 	/**
@@ -131,9 +131,9 @@ public class MegaDeviceBinding extends
 	 */
 	public void deactivate(final int reason) {
 		this.bundleContext = null;
-		
+
 		MegadeviceHttpServer.setRunningState(false);
-		
+
 		// deallocate resources here that are no longer needed and
 		// should be reset when activating this binding again
 	}
@@ -208,41 +208,82 @@ public class MegaDeviceBinding extends
 		int state = 0;
 		HttpURLConnection con;
 		for (MegaDeviceBindingProvider provider : providers) {
-			//logger.debug("SendCommand exec");
+			// logger.debug("SendCommand exec");
 			for (String itemname : provider.getItemNames()) {
-				if (itemname.equals(itemName)) {
+				if (provider.getItemType(itemname).toString()
+						.contains("SwitchItem")) {
+					if (itemname.equals(itemName)) {
 
-					if (newState.equals("ON")) {
-						state = 1;
-					} else if (newState.equals("OFF")) {
-						state = 0;
+						if (newState.equals("ON")) {
+							state = 1;
+						} else if (newState.equals("OFF")) {
+							state = 0;
+						}
+
+						URL MegaURL;
+						String Result = "http://" + provider.getIP(itemName)
+								+ "/" + provider.password(itemName) + "/?cmd="
+								+ provider.getPORT(itemName) + ":" + state;
+						logger.info(Result);
+						try {
+							MegaURL = new URL(Result);
+							con = (HttpURLConnection) MegaURL.openConnection();
+							// optional default is GET
+							con.setRequestMethod("GET");
+							// add request header
+							con.setRequestProperty("User-Agent", "Mozilla/5.0");
+							if (con.getResponseCode() == 200)
+								logger.debug("OK");
+							con.disconnect();
+						} catch (MalformedURLException e) {
+							logger.debug("1" + e);
+							e.printStackTrace();
+						} catch (ProtocolException e) {
+							logger.debug("2" + e);
+							e.printStackTrace();
+						} catch (IOException e) {
+							logger.debug(e.getLocalizedMessage());
+							// e.printStackTrace();
+						}
+					}
+				} else if (provider.getItemType(itemname).toString()
+						.contains("DimmerItem")) {
+					int result = (int) Math
+							.round(Integer.parseInt(newState) * 2.55);
+					logger.debug(" " + result);
+					if (itemname.equals(itemName)) {
+						URL MegaURL;
+						String Result = "http://" + provider.getIP(itemName)
+								+ "/" + provider.password(itemName) + "/?cmd="
+								+ provider.getPORT(itemName) + ":" + result;
+						logger.info(Result);
+
+						try {
+							MegaURL = new URL(Result);
+							con = (HttpURLConnection) MegaURL.openConnection();
+							// optional default is GET
+							con.setRequestMethod("GET");
+							// add request header
+							con.setRequestProperty("User-Agent", "Mozilla/5.0");
+							if (con.getResponseCode() == 200)
+								logger.debug("OK");
+							con.disconnect();
+						} catch (MalformedURLException e) {
+							logger.debug("1" + e);
+							e.printStackTrace();
+						} catch (ProtocolException e) {
+							logger.debug("2" + e);
+							e.printStackTrace();
+						} catch (IOException e) {
+							logger.debug(e.getLocalizedMessage());
+							// e.printStackTrace();
+						}
+
 					}
 
-					URL MegaURL;
-					String Result = "http://" + provider.getIP(itemName) + "/"
-							+ provider.password(itemName) + "/?cmd="
-							+ provider.getPORT(itemName) + ":" + state;
-					logger.info(Result);
-					try {
-						MegaURL = new URL(Result);
-						con = (HttpURLConnection) MegaURL.openConnection();
-						// optional default is GET
-						con.setRequestMethod("GET");
-						// add request header
-						con.setRequestProperty("User-Agent", "Mozilla/5.0");
-						if (con.getResponseCode() == 200)
-							logger.debug("OK");
-						con.disconnect();
-					} catch (MalformedURLException e) {
-						logger.debug("1" + e);
-						e.printStackTrace();
-					} catch (ProtocolException e) {
-						logger.debug("2" + e);
-						e.printStackTrace();
-					} catch (IOException e) {
-						logger.debug(e.getLocalizedMessage());
-						// e.printStackTrace();
-					}
+				} else {
+					logger.debug(provider.getItemType(itemName).toString());
+
 				}
 			}
 		}
