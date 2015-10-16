@@ -1,17 +1,20 @@
- - Пока только как Switch 
+ - Пока только как Switch и Dimmer
  - В настройках меги указываем айпи сервера 192.168.0.1:8989 
  - имя скрипта - любое
 
 ### в OpenHAB *.items:
-```javascript
+```
 Switch MegaDeviceButton_kitchen 	"Kitchen button" {megadevice="sec:192.168.0.17:0"}
 Switch KitchenLamp "Свет над кухней" (Hall, Hall_Lights) {megadevice="sec:192.168.0.17:9"}
+
+Dimmer DimmedLight	"Dimmer [%d %%]"	{megadevice="sec:localhost:0"}
+
 ```
-```javascript
+```
 {megadevice="пароль на мегу : айпишник меги : номер порта меги"}
 ```
 #### Пример Mega.rules:
-```javascript
+```
 rule "MegadeviceKitchenButtonPress"
 when Item MegaDeviceButton_kitchen changed to ON
 then if (KitchenLamp.state == OFF) {
@@ -38,7 +41,7 @@ then
 end
 ```
 ### Пример с таймером:
-```javascript
+```
 var int Timeout
 
 rule "Test"
@@ -68,16 +71,17 @@ var int Stop = now.getMillisOfDay
 end
 ```
 ### Пример default.siemaps:
-```javascript
+```
 sitemap default label= "Main Screen"{
 	Frame label="Кухня" {
 		Switch item=KitchenLamp
+		Slider item=DimmedLight
 	}
 }
 ```
 
 ### Чтобы изменить номер порта втавляем эти строчки в конец конфига Openhub:
-```javascript
+```
 ################################ Megadevice Binding #######################################
 #
 # IP address of a Http port for megadevice defaut value is 8989
