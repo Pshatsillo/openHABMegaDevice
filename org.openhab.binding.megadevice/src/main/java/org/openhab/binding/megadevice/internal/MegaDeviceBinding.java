@@ -26,6 +26,7 @@ import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.osgi.framework.BundleContext;
@@ -296,11 +297,12 @@ public class MegaDeviceBinding extends
 	public void ScanPorts() {
 		String Result = "";
 		for (MegaDeviceBindingProvider provider : providers) {
-			
+
 			for (String itemName : provider.getItemNames()) {
 				try {
-					if(provider.getItemType(itemName).toString().contains("NumberItem")){
-						if(provider.getPORT(itemName).toString().contains("t")){
+					if (provider.getItemType(itemName).toString()
+							.contains("NumberItem")) {
+						if (provider.getPORT(itemName).toString().contains("t")) {
 							Result = "http://" + provider.getIP(itemName) + "/"
 									+ provider.password(itemName) + "/?tget=1";
 						} else {
@@ -308,12 +310,20 @@ public class MegaDeviceBinding extends
 									+ provider.password(itemName) + "/?pt="
 									+ provider.getPORT(itemName) + "&cmd=get";
 						}
+					} else if (provider.getItemType(itemName).toString()
+							.contains("StringItem")) {
+						String[] PortParse = provider.getPORT(itemName)
+								.toString().split("[,]");
+
+						Result = "http://" + provider.getIP(itemName) + "/"
+								+ provider.password(itemName) + "/?pt="
+								+ PortParse[0] + "&cmd=get";
 					} else {
-						 Result = "http://" + provider.getIP(itemName) + "/"
+						Result = "http://" + provider.getIP(itemName) + "/"
 								+ provider.password(itemName) + "/?pt="
 								+ provider.getPORT(itemName) + "&cmd=get";
 					}
-					
+
 					URL obj = new URL(Result);
 					HttpURLConnection con = (HttpURLConnection) obj
 							.openConnection();
@@ -347,8 +357,38 @@ public class MegaDeviceBinding extends
 									.toString(percent)));
 							logger.debug(itemName + " " + percent);
 						} else if (provider.getItemType(itemName).toString()
-								.contains("NumberItem")){
-							ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
+								.contains("NumberItem")) {
+							ep.postUpdate(itemName,
+									DecimalType.valueOf(response.toString()));
+						} else if (provider.getItemType(itemName).toString()
+								.contains("StringItem")) {
+
+							if (provider.getPORT(itemName).toString()
+									.contains("dht")) {
+								String[] PortParse = provider.getPORT(itemName)
+										.toString().split("[,]");
+								if (PortParse[2].contains("t")) {
+
+									String[] ResponseParse = response
+											.toString().split("[:/]");
+									logger.debug(ResponseParse[1]);
+									ep.postUpdate(itemName, StringType
+											.valueOf(ResponseParse[1]));
+								} else if (PortParse[2].contains("h")) {
+									String[] ResponseParse = response
+											.toString().split("[:/]");
+									logger.debug(ResponseParse[3]);
+									ep.postUpdate(itemName, StringType
+											.valueOf(ResponseParse[3]));
+								}
+							} else if (provider.getPORT(itemName).toString()
+									.contains("1w")) {
+									String[] ResponseParse = response
+											.toString().split("[:]");
+									logger.debug(ResponseParse[1]);
+									ep.postUpdate(itemName, StringType
+											.valueOf(ResponseParse[1]));
+							}
 						}
 					}
 				} catch (IOException e) {
@@ -356,7 +396,7 @@ public class MegaDeviceBinding extends
 							+ provider.getIP(itemName) + " error: "
 							+ e.getLocalizedMessage());
 				}
-			} 
+			}
 		}
 	}
 
@@ -368,15 +408,23 @@ public class MegaDeviceBinding extends
 				+ onoff);
 		for (MegaDeviceBindingProvider provider : megaproviders) {
 			for (String itemName : provider.getItemNames()) {
-				if (provider.getItemType(itemName).toString().contains("SwitchItem")) {
-				if (provider.getIP(itemName).equals(hostAddress) && provider.getPORT(itemName).equals(getCommands[2])) {
-						logger.debug(" itemName: " + provider.getItemType(itemName));
+				if (provider.getItemType(itemName).toString()
+						.contains("SwitchItem")) {
+					if (provider.getIP(itemName).equals(hostAddress)
+							&& provider.getPORT(itemName)
+									.equals(getCommands[2])) {
+						logger.debug(" itemName: "
+								+ provider.getItemType(itemName));
 						ep.postUpdate(itemName, onoff);
 					}
-				}  else if (provider.getItemType(itemName).toString().contains("NumberItem")){
-					if (provider.getIP(itemName).equals(hostAddress) && provider.getPORT(itemName).equals("at")) {
-						logger.debug(" itemName: " + provider.getItemType(itemName));
-						ep.postUpdate(itemName, DecimalType.valueOf(getCommands[2]));
+				} else if (provider.getItemType(itemName).toString()
+						.contains("NumberItem")) {
+					if (provider.getIP(itemName).equals(hostAddress)
+							&& provider.getPORT(itemName).equals("at")) {
+						logger.debug(" itemName: "
+								+ provider.getItemType(itemName));
+						ep.postUpdate(itemName,
+								DecimalType.valueOf(getCommands[2]));
 					}
 				}
 			}
