@@ -426,6 +426,14 @@ public class MegaDeviceBinding extends
 						ep.postUpdate(itemName,
 								DecimalType.valueOf(getCommands[2]));
 					}
+				} else if (provider.getItemType(itemName).toString()
+						.contains("StringItem")){
+					if (provider.getIP(itemName).equals(hostAddress)
+							&& provider.getPORT(itemName)
+									.equals(getCommands[2]) && getCommands[3].equals("ib")){
+						ep.postUpdate(itemName,
+								StringType.valueOf(getCommands[4]));
+					}
 				}
 			}
 		}

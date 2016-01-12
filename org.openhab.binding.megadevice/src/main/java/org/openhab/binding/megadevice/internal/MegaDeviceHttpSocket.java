@@ -61,6 +61,9 @@ public class MegaDeviceHttpSocket extends Thread {
 					} else {
 						MegaDeviceBinding.updateValues(this.s.getInetAddress()
 								.getHostAddress(), getCommands, OnOffType.ON);
+						for(int i =0; getCommands.length <= i; i++){
+							logger.debug(i + " value " + getCommands[i]);
+						}
 					}
 					break;
 				} else
