@@ -41,7 +41,6 @@ public class MegaDeviceGenericBindingProvider extends
 	/**
 	 * @{inheritDoc
 	 */
-	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
 		if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof NumberItem || item instanceof StringItem)) {
@@ -92,28 +91,28 @@ public class MegaDeviceGenericBindingProvider extends
 		public String password;
 	}
 
-	@Override
+	
 	public String getIP(String itemName) {
 		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
 				.get(itemName);
 		return config.ip;
 	}
 
-	@Override
+	
 	public String getPORT(String itemName) {
 		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
 				.get(itemName);
 		return config.port;
 	}
 
-	@Override
+	
 	public String password(String itemName) {
 		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
 				.get(itemName);
 		return config.password;
 	}
 
-	@Override
+	
 	public Class<? extends Item> getItemType(String itemName) {
 		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
 				.get(itemName);

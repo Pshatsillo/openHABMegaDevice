@@ -10,12 +10,12 @@ public class MegaDeviceActivator implements BundleActivator {
 	private static Logger logger = LoggerFactory
 			.getLogger(MegaDeviceActivator.class);
 
-	@Override
+	
 	public void start(BundleContext context) throws Exception {
 		logger.info("MegaDevice binding has been started.");
 	}
 
-	@Override
+	
 	public void stop(BundleContext context) throws Exception {
 		logger.debug("MegaDevice binding has been stopped.");
 	}

@@ -19,8 +19,7 @@ public class MegaDeviceHttpSocket extends Thread {
 	private final Socket s;
 	private InputStream is;
 	private OutputStream os;
-	private static Logger logger = LoggerFactory
-			.getLogger(MegaDeviceHttpSocket.class);
+	private static Logger logger = LoggerFactory.getLogger(MegaDeviceHttpSocket.class);
 
 	public MegaDeviceHttpSocket(Socket s) {
 		this.s = s;
@@ -29,7 +28,7 @@ public class MegaDeviceHttpSocket extends Thread {
 			this.os = s.getOutputStream();
 		} catch (IOException e) {
 			logger.debug("ERROR: " + e.getMessage());
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
@@ -50,18 +49,17 @@ public class MegaDeviceHttpSocket extends Thread {
 					break;
 				}
 				if (s.contains("GET") && s.contains("?")) {
-					logger.debug(this.s.getInetAddress().getHostAddress() + " "
-							+ s);
+					logger.debug(this.s.getInetAddress().getHostAddress() + " " + s);
 					String[] CommandParse = s.split("[/ ]");
 					String command = CommandParse[2];
 					getCommands = command.split("[?&>=]");
 					if (s.contains("m=1")) {
-						MegaDeviceBinding.updateValues(this.s.getInetAddress()
-								.getHostAddress(), getCommands, OnOffType.OFF);
+						MegaDeviceBinding.updateValues(this.s.getInetAddress().getHostAddress(), getCommands,
+								OnOffType.OFF);
 					} else {
-						MegaDeviceBinding.updateValues(this.s.getInetAddress()
-								.getHostAddress(), getCommands, OnOffType.ON);
-						for(int i =0; getCommands.length <= i; i++){
+						MegaDeviceBinding.updateValues(this.s.getInetAddress().getHostAddress(), getCommands,
+								OnOffType.ON);
+						for (int i = 0; getCommands.length > i; i++) {
 							logger.debug(i + " value " + getCommands[i]);
 						}
 					}
@@ -75,8 +73,8 @@ public class MegaDeviceHttpSocket extends Thread {
 	}
 
 	private void writeResponse() {
-		String result = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n"
-				+ "Content-Length: " + 0 + "\r\n" + "Connection: close\r\n\r\n";
+		String result = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "Content-Length: " + 0 + "\r\n"
+				+ "Connection: close\r\n\r\n";
 		try {
 			os.write(result.getBytes());
 			os.flush();
