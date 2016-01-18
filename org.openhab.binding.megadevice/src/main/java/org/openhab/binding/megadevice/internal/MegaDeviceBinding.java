@@ -74,6 +74,8 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	 *            Configuration properties for this component obtained from the
 	 *            ConfigAdmin service
 	 */
+	
+	private long delay = 1000;
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
 
@@ -94,12 +96,18 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		if (StringUtils.isNotBlank(portNumber)) {
 			portnumber = Integer.parseInt(portNumber);
 		}
+		
+		String Delay = (String) configuration.get("delay");
+		if (StringUtils.isNotBlank(Delay)) {
+			delay = Long.parseLong(Delay);
+		}
 		setProperlyConfigured(true);
 		if (portnumber > 0) {
 			MegadeviceHttpServer.setPort(portnumber);
 		}
 		new MegadeviceHttpServer().start();
 
+		
 	}
 
 	/**
@@ -311,6 +319,15 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 					URL obj = new URL(Result);
 					HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 					logger.debug(Result);
+					
+					logger.debug("Sleeping...");
+					try {
+						Thread.sleep(delay);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					logger.debug("Waking up...");
+					
 					// optional default is GET
 					con.setRequestMethod("GET");
 
@@ -325,7 +342,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						response.append(inputLine);
 					}
 					in.close();
-
+					logger.debug("input string->" + response.toString());
 					if (response.toString().contains("ON")) {
 						ep.postUpdate(itemName, OnOffType.ON);
 					} else if (response.toString().contains("OFF")) {
@@ -341,14 +358,21 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 
 							if (provider.getPORT(itemName).toString().contains("dht")) {
 								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
+								for(int ind=0; ind < PortParse.length; ind++){
+									logger.debug(PortParse[ind]);
+								}
 								if (PortParse[2].contains("t")) {
 
 									String[] ResponseParse = response.toString().split("[:/]");
-									logger.debug(ResponseParse[1]);
+									for(int ind=0; ind < ResponseParse.length; ind++){
+										logger.debug(ind + ": " +ResponseParse[ind]);
+									}
 									ep.postUpdate(itemName, StringType.valueOf(ResponseParse[1]));
 								} else if (PortParse[2].contains("h")) {
 									String[] ResponseParse = response.toString().split("[:/]");
-									logger.debug(ResponseParse[3]);
+									for(int ind=0; ind < ResponseParse.length; ind++){
+										logger.debug(ind + ": "+ ResponseParse[ind]);
+									}
 									ep.postUpdate(itemName, StringType.valueOf(ResponseParse[3]));
 								}
 							} else if (provider.getPORT(itemName).toString().contains("1w")) {
@@ -364,6 +388,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 				}
 			}
 		}
+		
 	}
 
 	public static void updateValues(String hostAddress, String[] getCommands, OnOffType onoff) {
