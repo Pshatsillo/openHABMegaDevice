@@ -143,5 +143,8 @@
 		}
     }
 
+По многочисленным просьбам - Donate:
 
+[Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P38VCVDQMSMYQ)  [Yandex.Money](https://money.yandex.ru/to/410011024847033)
 
+Спасибо!
