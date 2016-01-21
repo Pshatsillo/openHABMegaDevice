@@ -1,0 +1,12 @@
+
+org.openhab.binding.megadevice/target/classes/org/openhab/binding/megadevice/internal/MegaDeviceGenericBindingProvider$MegaDeviceBindingConfig.class
+
+*.class
+
+not for deploy/plugins/org.openhab.binding.megadevice_0.0.9.jar
+
+not for deploy/plugins/org.openhab.binding.megadevice_0.0.9.2.jar
+
+not for deploy/plugins/org.openhab.binding.megadevice_0.0.9.1.jar
+
+*.class
