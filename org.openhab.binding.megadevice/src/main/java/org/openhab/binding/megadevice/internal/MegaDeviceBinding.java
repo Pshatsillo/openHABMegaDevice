@@ -186,6 +186,9 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		// event bus goes here. This method is only called if one of the
 		// BindingProviders provide a binding for the given 'itemName'.
 		logger.debug("internalReceiveCommand({},{}) is called!", itemName, command);
+		
+		
+		
 		SendCommand(itemName, command.toString());
 	}
 
@@ -216,11 +219,10 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		int state = 0;
 		HttpURLConnection con;
 		for (MegaDeviceBindingProvider provider : providers) {
-			// logger.debug("SendCommand exec");
+			 logger.debug("SendCommand exec");
 			for (String itemname : provider.getItemNames()) {
-				if (provider.getItemType(itemname).toString().contains("SwitchItem")) {
-					if (itemname.equals(itemName)) {
-
+				//logger.debug(itemname +" has type "+ provider.getItemType(itemName).toString());
+				if ((itemname.equals(itemName))&&(provider.getItemType(itemname).toString().contains("SwitchItem"))) {
 						if (newState.equals("ON")) {
 							state = 1;
 						} else if (newState.equals("OFF")) {
@@ -235,7 +237,9 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 							MegaURL = new URL(Result);
 							con = (HttpURLConnection) MegaURL.openConnection();
 							// optional default is GET
+							con.setReadTimeout(500);
 							con.setRequestMethod("GET");
+							
 							// add request header
 							con.setRequestProperty("User-Agent", "Mozilla/5.0");
 							if (con.getResponseCode() == 200)
@@ -251,8 +255,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 							logger.debug(e.getLocalizedMessage());
 							// e.printStackTrace();
 						}
-					}
-				} else if (provider.getItemType(itemname).toString().contains("DimmerItem")) {
+				} else if ((itemname.equals(itemName))&&(provider.getItemType(itemname).toString().contains("DimmerItem"))) {
 					int result = (int) Math.round(Integer.parseInt(newState) * 2.55);
 					logger.debug(" " + result);
 					if (itemname.equals(itemName)) {
@@ -266,6 +269,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 							con = (HttpURLConnection) MegaURL.openConnection();
 							// optional default is GET
 							con.setRequestMethod("GET");
+							con.setReadTimeout(500);
 							// add request header
 							con.setRequestProperty("User-Agent", "Mozilla/5.0");
 							if (con.getResponseCode() == 200)
@@ -279,13 +283,13 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 							e.printStackTrace();
 						} catch (IOException e) {
 							logger.debug(e.getLocalizedMessage());
-							// e.printStackTrace();
+							 //e.printStackTrace();
 						}
 
 					}
 
 				} else {
-					logger.debug(provider.getItemType(itemName).toString());
+				//	logger.error(itemname +"cannot determine type: " + provider.getItemType(itemname).toString());
 
 				}
 			}
@@ -320,16 +324,17 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 					HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 					logger.debug(Result);
 					
-					logger.debug("Sleeping...");
+					//logger.debug("Sleeping...");
 					try {
 						Thread.sleep(delay);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					logger.debug("Waking up...");
+					//logger.debug("Waking up...");
 					
 					// optional default is GET
 					con.setRequestMethod("GET");
+					con.setReadTimeout(500);
 
 					// add request header
 					con.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -342,7 +347,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						response.append(inputLine);
 					}
 					in.close();
-					logger.debug("input string->" + response.toString());
+					//logger.debug("input string->" + response.toString());
 					if (response.toString().contains("ON")) {
 						ep.postUpdate(itemName, OnOffType.ON);
 					} else if (response.toString().contains("OFF")) {

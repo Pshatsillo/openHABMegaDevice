@@ -70,6 +70,10 @@ public class MegaDeviceGenericBindingProvider extends
 					: "NO_Pass";
 			config.ip = configParts.length > 0 ? configParts[1] : "NO_IP";
 			config.port = configParts.length > 0 ? configParts[2] : "NO_PORT";
+			
+			
+			logger.debug("binding item:" + item +". It has " + config.itemType.getName()+ " class and " + config.password + " password " +config.ip+ " ip " +config.port+ "port");
+			
 			// } //else if (item instanceof NumberItem) {
 			addBindingConfig(item, config);
 		} else {
