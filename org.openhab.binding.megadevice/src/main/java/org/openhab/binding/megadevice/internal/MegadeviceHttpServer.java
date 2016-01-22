@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class MegadeviceHttpServer extends Thread {
 	private static Logger logger = LoggerFactory
-			.getLogger(MegaDeviceActivator.class);
+			.getLogger(MegadeviceHttpServer.class);
 	private static int portnumber = 8989;
 	private static boolean isRunning = true;
 	private static ServerSocket ss = null;

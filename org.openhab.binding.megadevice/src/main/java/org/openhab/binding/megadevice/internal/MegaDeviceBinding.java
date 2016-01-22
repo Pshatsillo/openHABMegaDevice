@@ -75,7 +75,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	 *            ConfigAdmin service
 	 */
 	
-	private long delay = 1000;
+	private long delay = 10000;
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
 
@@ -324,17 +324,17 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 					HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 					logger.debug(Result);
 					
-					//logger.debug("Sleeping...");
+					logger.debug("Sleeping...");
 					try {
 						Thread.sleep(delay);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					//logger.debug("Waking up...");
+					logger.debug("Waking up...");
 					
 					// optional default is GET
 					con.setRequestMethod("GET");
-					con.setReadTimeout(500);
+					//con.setReadTimeout(500);
 
 					// add request header
 					con.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -347,7 +347,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						response.append(inputLine);
 					}
 					in.close();
-					//logger.debug("input string->" + response.toString());
+					logger.debug("input string->" + response.toString());
 					if (response.toString().contains("ON")) {
 						ep.postUpdate(itemName, OnOffType.ON);
 					} else if (response.toString().contains("OFF")) {

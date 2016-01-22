@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
 
 public class MegaDeviceHttpSocket extends Thread {
 
-	private EventPublisher ep;
-
 	private final Socket s;
 	private InputStream is;
 	private OutputStream os;
@@ -84,6 +82,5 @@ public class MegaDeviceHttpSocket extends Thread {
 	}
 
 	public void setEventPublisher(EventPublisher eventPublisher) {
-		this.ep = eventPublisher;
 	}
 }
