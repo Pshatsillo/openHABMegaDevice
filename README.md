@@ -1,4 +1,4 @@
-- Работает как Switch, Dimmer, Number, String 
+- Работает как Switch, Dimmer, Number 
  - В настройках меги указываем айпи сервера 192.168.0.1:8989 
  - имя скрипта - любое
 
@@ -33,7 +33,7 @@
 
 обработку "v" и "dir" не делал. 
 
-**Для получения температуры используем String:**
+**Для получения температуры используем Number:**
 
     {megadevice="sec:192.168.0.17:0,dht11,t"}
 
@@ -52,7 +52,7 @@
 
 **Пример item:**
 
-    Number MegaDeviceOneTemp "Mega 1 temperature" {megadevice="sec:192.168.0.17:t"}
+    Number MegaDeviceOneTemp "Mega 1 temperature" {megadevice="sec:192.168.0.17:tget"}
 
 С помощью параметра at, устройство сообщает на сервер о превышении порога температуры встроенного сенсора
 
