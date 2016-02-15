@@ -384,6 +384,8 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						} else if (provider.getPORT(itemName).toString().contains("tget")) {
 						    
 							ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
+						} else {
+						    ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
 						}
 						} 
 					}
