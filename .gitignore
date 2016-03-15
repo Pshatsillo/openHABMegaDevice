@@ -12,4 +12,3 @@ not for deploy/plugins/org.openhab.binding.megadevice_0.0.9.1.jar
 *.class
 
 not for deploy/plugins/org.openhab.binding.megadevice_0.0.9.3.jar
-*.class

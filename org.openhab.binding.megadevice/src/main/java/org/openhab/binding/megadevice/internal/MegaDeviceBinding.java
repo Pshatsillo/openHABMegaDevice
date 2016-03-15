@@ -334,8 +334,6 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 					// optional default is GET
 					con.setRequestMethod("GET");
 					//con.setReadTimeout(500);
-					con.setConnectTimeout(500);
-					con.setReadTimeout(500);
 
 					// add request header
 					con.setRequestProperty("User-Agent", "Mozilla/5.0");
