@@ -440,7 +440,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		} else if (provider.getItemType(itemName).toString().contains("StringItem")) {
 		    if (provider.getIP(itemName).equals(hostAddress)
 			    && provider.getPORT(itemName).equals(getCommands[2]) && getCommands[3].equals("ib")) {
-			ep.postUpdate(itemName, StringType.valueOf(getCommands[4]));
+			ep.postUpdate(itemName, StringType.valueOf(getCommands[4])); 
 		    }
 		}
 	    }
