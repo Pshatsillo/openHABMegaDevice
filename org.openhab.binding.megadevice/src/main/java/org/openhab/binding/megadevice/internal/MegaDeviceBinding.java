@@ -364,28 +364,29 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 				    logger.debug(PortParse[ind]);
 				}
 				if (PortParse[2].contains("t")) {
-				    
 
 				    String[] ResponseParse = response.toString().split("[:/]");
 				    for (int ind = 0; ind < ResponseParse.length; ind++) {
 					logger.debug(ind + ": " + ResponseParse[ind]);
 				    }
-				    
-				    if(ResponseParse[0].contains("temp")){
-					
+				    if (ResponseParse.length > 2) {
+					if (ResponseParse[0].contains("temp")) {
 					    ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[1]));
+					}
 				    } else {
 					ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[0]));
 				    }
-				    
+
 				} else if (PortParse[2].contains("h")) {
 				    String[] ResponseParse = response.toString().split("[:/]");
-				    
+
 				    for (int ind = 0; ind < ResponseParse.length; ind++) {
 					logger.debug(ind + ": " + ResponseParse[ind]);
 				    }
-				    if(ResponseParse[2].contains("temp")){
-				    ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[3]));
+				    if (ResponseParse.length > 2) {
+					if (ResponseParse[2].contains("hum")) {
+					    ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[3]));
+					}
 				    } else {
 					ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[1]));
 				    }
