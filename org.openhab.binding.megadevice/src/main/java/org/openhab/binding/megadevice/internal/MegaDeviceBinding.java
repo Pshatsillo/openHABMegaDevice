@@ -92,7 +92,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
 		String refreshIntervalString = (String) configuration.get("refresh");
 		if (StringUtils.isNotBlank(refreshIntervalString)) {
-			refreshInterval = Long.parseLong(refreshIntervalString);
+			//refreshInterval = Long.parseLong(refreshIntervalString);
 		}
 
 		String portNumber = (String) configuration.get("httpserverport");
@@ -103,7 +103,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 
 		String Delay = (String) configuration.get("delay");
 		if (StringUtils.isNotBlank(Delay)) {
-			delay = Long.parseLong(Delay);
+			//delay = Long.parseLong(Delay);
 		}
 		setProperlyConfigured(true);
 		if (portnumber > 0) {
