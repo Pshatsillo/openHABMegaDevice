@@ -12,7 +12,7 @@ import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.items.Item;
 
 /**
- * @author Petr
+ * @author Petr Shatsillo
  * @since 0.0.1
  */
 public interface MegaDeviceBindingProvider extends BindingProvider {
@@ -22,6 +22,8 @@ public interface MegaDeviceBindingProvider extends BindingProvider {
 	public String getPORT(String itemName);
 
 	public String password(String itemName);
+	
+	public int getPollInterval(String itemName);
 
 	Class<? extends Item> getItemType(String itemName);
 
