@@ -215,7 +215,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?tget=1";
 							} else if ((provider.getPORT(itemName).toString().contains("t"))
-									|| (provider.getPORT(itemName).toString().contains("h"))) {
+									|| (provider.getPORT(itemName).toString().contains("h")) || (provider.getPORT(itemName).toString().contains("r")) ) {
 								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
@@ -294,6 +294,17 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 										} else {
 											ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[1]));
 										}
+									}  else if (PortParse[2].contains("r")) {
+										String[] ResponseParse = response.toString().split("[:/]");
+										for (int ind = 0; ind < ResponseParse.length; ind++) {
+											logger.debug(ind + ": " + ResponseParse[ind]);
+										}
+										if (ResponseParse.length > 2) {			
+												ep.postUpdate(itemName, StringType.valueOf(ResponseParse[1] + "/" + ResponseParse[3]));
+										} else {
+											ep.postUpdate(itemName, StringType.valueOf(ResponseParse[0] + "/" + ResponseParse[1]));
+										}
+										
 									}
 								} else if (provider.getPORT(itemName).toString().contains("1w")) {
 									String[] ResponseParse = response.toString().split("[:]");
