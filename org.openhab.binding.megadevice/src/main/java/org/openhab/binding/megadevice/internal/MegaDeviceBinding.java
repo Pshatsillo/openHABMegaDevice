@@ -34,13 +34,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NumberType;
-
 /**
  * Implement this class if you are going create an actively polling service like
  * querying a Website/Device.
  * 
- * @author Petr
+ * @author Petr Shatsillo
  * @since 0.0.1
  */
 public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingProvider> {
@@ -49,6 +47,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	private static EventPublisher ep;
 
 	private boolean isSetPublisher;
+	private boolean firstRun = true;
 
 	private Map<String, Long> lastPollTime = new HashMap<String, Long>();
 
@@ -78,7 +77,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	 *            ConfigAdmin service
 	 */
 
-	private long delay = 10000;
+	private long delay = 1000;
 
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
@@ -92,7 +91,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		// parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
 		String refreshIntervalString = (String) configuration.get("refresh");
 		if (StringUtils.isNotBlank(refreshIntervalString)) {
-			//refreshInterval = Long.parseLong(refreshIntervalString);
+			// refreshInterval = Long.parseLong(refreshIntervalString);
 		}
 
 		String portNumber = (String) configuration.get("httpserverport");
@@ -103,7 +102,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 
 		String Delay = (String) configuration.get("delay");
 		if (StringUtils.isNotBlank(Delay)) {
-			//delay = Long.parseLong(Delay);
+			// delay = Long.parseLong(Delay);
 		}
 		setProperlyConfigured(true);
 		if (portnumber > 0) {
@@ -176,13 +175,17 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 			setEP();
 		}
 		setProviders();
+		if (firstRun) {
+			ScanPorts();
+			firstRun = false;
+		}
 		ScanPortsScheduler();
 	}
 
 	private void ScanPortsScheduler() {
-		
-		//logger.debug("ScanPortsScheduler start...");
-		
+
+		// logger.debug("ScanPortsScheduler start...");
+
 		String Result = "";
 		for (MegaDeviceBindingProvider provider : providers) {
 
@@ -190,23 +193,22 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 
 				int refreshInterval = provider.getPollInterval(itemName);
 
-			//	logger.debug("refreshInterval = " + refreshInterval);
-				
-				
+				// logger.debug("refreshInterval = " + refreshInterval);
+
 				Long lastUpdateTimeStamp = lastPollTime.get(itemName);
 				if (lastUpdateTimeStamp == null) {
 					lastUpdateTimeStamp = 0L;
 				}
-				
+
 				long diff = System.currentTimeMillis() - lastUpdateTimeStamp;
 				boolean needsUpdate = diff >= (refreshInterval * 1000);
-				
-				if(refreshInterval == 0){
+
+				if (refreshInterval == 0) {
 					needsUpdate = false;
 				}
 
 				if (needsUpdate) {
-					
+
 					try {
 						if (provider.getItemType(itemName).toString().contains("NumberItem")) {
 							if (provider.getPORT(itemName).toString().contains("tget")) {
@@ -216,12 +218,12 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 									|| (provider.getPORT(itemName).toString().contains("h"))) {
 								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 
-								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName) + "/?pt="
-										+ PortParse[0] + "&cmd=get";
+								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
+										+ "/?pt=" + PortParse[0] + "&cmd=get";
 							} else {
 
-								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName) + "/?pt="
-										+ provider.getPORT(itemName) + "&cmd=get";
+								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
+										+ "/?pt=" + provider.getPORT(itemName) + "&cmd=get";
 							}
 						} else {
 							Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName) + "/?pt="
@@ -234,7 +236,6 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 
 						// optional default is GET
 						con.setRequestMethod("GET");
-						// con.setReadTimeout(500);
 						con.setConnectTimeout(500);
 						con.setReadTimeout(500);
 
@@ -311,11 +312,10 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 							}
 						}
 					} catch (IOException e) {
-						logger.debug(
-								"Connect to megadevice " + provider.getIP(itemName) + " error: " + e.getLocalizedMessage());
+						logger.debug("Connect to megadevice " + provider.getIP(itemName) + " error: "
+								+ e.getLocalizedMessage());
 					}
-					
-					
+
 					lastPollTime.put(itemName, System.currentTimeMillis());
 				}
 			}
@@ -381,8 +381,10 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						MegaURL = new URL(Result);
 						con = (HttpURLConnection) MegaURL.openConnection();
 						// optional default is GET
-						// con.setReadTimeout(500);
+
 						con.setRequestMethod("GET");
+						con.setConnectTimeout(500);
+						con.setReadTimeout(500);
 
 						// add request header
 						con.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -413,7 +415,8 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						con = (HttpURLConnection) MegaURL.openConnection();
 						// optional default is GET
 						con.setRequestMethod("GET");
-						// con.setReadTimeout(500);
+						con.setConnectTimeout(500);
+						con.setReadTimeout(500);
 						// add request header
 						con.setRequestProperty("User-Agent", "Mozilla/5.0");
 						if (con.getResponseCode() == 200)
@@ -439,6 +442,11 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	}
 
 	public void ScanPorts() {
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		String Result = "";
 		for (MegaDeviceBindingProvider provider : providers) {
 
@@ -475,10 +483,8 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						e.printStackTrace();
 					}
 					logger.debug("Waking up...");
-
 					// optional default is GET
 					con.setRequestMethod("GET");
-					// con.setReadTimeout(500);
 					con.setConnectTimeout(500);
 					con.setReadTimeout(500);
 

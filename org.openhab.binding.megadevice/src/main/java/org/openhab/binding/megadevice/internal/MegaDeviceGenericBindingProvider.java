@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is responsible for parsing the binding configuration.
  * 
- * @author Petr
+ * @author Petr Shatsillo
  * @since 0.0.1
  */
 public class MegaDeviceGenericBindingProvider extends
