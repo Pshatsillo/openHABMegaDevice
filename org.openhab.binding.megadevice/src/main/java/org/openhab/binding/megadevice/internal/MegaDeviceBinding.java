@@ -215,7 +215,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?tget=1";
 							} else if ((provider.getPORT(itemName).toString().contains("t"))
-									|| (provider.getPORT(itemName).toString().contains("h")) || (provider.getPORT(itemName).toString().contains("r")) ) {
+									|| (provider.getPORT(itemName).toString().contains("h"))) {
 								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
@@ -225,7 +225,16 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + provider.getPORT(itemName) + "&cmd=get";
 							}
-						} else {
+						}else if (provider.getItemType(itemName).toString().contains("StringItem")) {
+							if(provider.getPORT(itemName).toString().contains("r")){
+								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
+
+								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
+										+ "/?pt=" + PortParse[0] + "&cmd=get";
+							}
+							
+						}
+						else {
 							Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName) + "/?pt="
 									+ provider.getPORT(itemName) + "&cmd=get";
 						}
@@ -319,6 +328,24 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 									ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
 								} else {
 									ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
+								}
+							} else if (provider.getItemType(itemName).toString().contains("StringItem")){
+								if (provider.getPORT(itemName).toString().contains("dht")) {
+									String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
+									for (int ind = 0; ind < PortParse.length; ind++) {
+										logger.debug(PortParse[ind]);
+									}
+									if (PortParse[2].contains("r")) {
+										String[] ResponseParse = response.toString().split("[:/]");
+										for (int ind = 0; ind < ResponseParse.length; ind++) {
+											logger.debug(ind + ": " + ResponseParse[ind]);
+										}
+										if (ResponseParse.length > 2) {			
+												ep.postUpdate(itemName, StringType.valueOf(ResponseParse[1] + "/" + ResponseParse[3]));
+										} else {
+											ep.postUpdate(itemName, StringType.valueOf(ResponseParse[0] + "/" + ResponseParse[1]));
+										}
+									}
 								}
 							}
 						}
