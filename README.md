@@ -95,6 +95,10 @@
 **Пример item:**
 
     Number MegaDeviceOneTemp "Mega 1 temperature" {megadevice="sec:192.168.0.17:tget"}
+    
+   Начиная с версии 0.1.0.2 добавляем интервал опроса в секундах:
+    
+    Number MegaDeviceOneTemp "Mega 1 temperature" {megadevice="sec:192.168.0.17:tget:30"}
 
 С помощью параметра at, устройство сообщает на сервер о превышении порога температуры встроенного сенсора
 
@@ -109,10 +113,6 @@
     Switch MegaDeviceButton_kitchen 	"Kitchen button" {megadevice="sec:192.168.0.17:0"}
     Switch KitchenLamp "Свет над кухней" (Hall, Hall_Lights) {megadevice="sec:192.168.0.17:9"}
     Dimmer DimmedLight	"Dimmer [%d %%]"	{megadevice="sec:192.168.0.17:0"}
-
-**Общий принцип:**
-
-    {megadevice="пароль на мегу : айпишник меги : номер порта меги"}
 
 
 #### Пример Mega.rules:
