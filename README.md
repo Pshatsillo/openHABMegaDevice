@@ -111,6 +111,7 @@
 ### в OpenHAB *.items:
 
     Switch MegaDeviceButton_kitchen 	"Kitchen button" {megadevice="sec:192.168.0.17:0"}
+    Number MegaDeviceButton_kitchenCounter    "Kitchen button press counter [%s]" {megadevice="sec:192.168.10.17:1,с:10"} //счетчик нажатий из самой меги
     Switch KitchenLamp "Свет над кухней" (Hall, Hall_Lights) {megadevice="sec:192.168.0.17:9"}
     Dimmer DimmedLight	"Dimmer [%d %%]"	{megadevice="sec:192.168.0.17:0"}
 
