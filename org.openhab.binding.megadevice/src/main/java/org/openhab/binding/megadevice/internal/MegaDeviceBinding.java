@@ -225,16 +225,15 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + provider.getPORT(itemName) + "&cmd=get";
 							}
-						}else if (provider.getItemType(itemName).toString().contains("StringItem")) {
-							if(provider.getPORT(itemName).toString().contains("r")){
+						} else if (provider.getItemType(itemName).toString().contains("StringItem")) {
+							if (provider.getPORT(itemName).toString().contains("r")) {
 								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + PortParse[0] + "&cmd=get";
 							}
-							
-						}
-						else {
+
+						} else {
 							Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName) + "/?pt="
 									+ provider.getPORT(itemName) + "&cmd=get";
 						}
@@ -260,10 +259,22 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						}
 						in.close();
 						logger.debug("input string->" + response.toString());
-						if (response.toString().contains("ON")) {
-							ep.postUpdate(itemName, OnOffType.ON);
+						if ((response.toString().contains("ON"))) {
+							String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
+							if (response.toString().contains("r")) {
+								ep.postUpdate(itemName, StringType.valueOf(PortParse[1]));
+							} else {
+								ep.postUpdate(itemName, OnOffType.ON);
+							}
 						} else if (response.toString().contains("OFF")) {
-							ep.postUpdate(itemName, OnOffType.OFF);
+
+							String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
+							if (PortParse[1].contains("r")) {
+								String[] value = response.toString().split("[/]");
+								ep.postUpdate(itemName, StringType.valueOf(value[1]));
+							} else {
+								ep.postUpdate(itemName, OnOffType.OFF);
+							}
 						} else {
 							if (provider.getItemType(itemName).toString().contains("DimmerItem")) {
 								int percent = (int) Math.round(Integer.parseInt(response.toString()) / 2.55);
@@ -303,17 +314,19 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 										} else {
 											ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[1]));
 										}
-									}  else if (PortParse[2].contains("r")) {
+									} else if (PortParse[2].contains("r")) {
 										String[] ResponseParse = response.toString().split("[:/]");
 										for (int ind = 0; ind < ResponseParse.length; ind++) {
 											logger.debug(ind + ": " + ResponseParse[ind]);
 										}
-										if (ResponseParse.length > 2) {			
-												ep.postUpdate(itemName, StringType.valueOf(ResponseParse[1] + "/" + ResponseParse[3]));
+										if (ResponseParse.length > 2) {
+											ep.postUpdate(itemName,
+													StringType.valueOf(ResponseParse[1] + "/" + ResponseParse[3]));
 										} else {
-											ep.postUpdate(itemName, StringType.valueOf(ResponseParse[0] + "/" + ResponseParse[1]));
+											ep.postUpdate(itemName,
+													StringType.valueOf(ResponseParse[0] + "/" + ResponseParse[1]));
 										}
-										
+
 									}
 								} else if (provider.getPORT(itemName).toString().contains("1w")) {
 									String[] ResponseParse = response.toString().split("[:]");
@@ -329,7 +342,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 								} else {
 									ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
 								}
-							} else if (provider.getItemType(itemName).toString().contains("StringItem")){
+							} else if (provider.getItemType(itemName).toString().contains("StringItem")) {
 								if (provider.getPORT(itemName).toString().contains("dht")) {
 									String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 									for (int ind = 0; ind < PortParse.length; ind++) {
@@ -340,19 +353,23 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 										for (int ind = 0; ind < ResponseParse.length; ind++) {
 											logger.debug(ind + ": " + ResponseParse[ind]);
 										}
-										if (ResponseParse.length > 2) {			
-												ep.postUpdate(itemName, StringType.valueOf(ResponseParse[1] + "/" + ResponseParse[3]));
+										if (ResponseParse.length > 2) {
+											ep.postUpdate(itemName,
+													StringType.valueOf(ResponseParse[1] + "/" + ResponseParse[3]));
 										} else {
-											ep.postUpdate(itemName, StringType.valueOf(ResponseParse[0] + "/" + ResponseParse[1]));
+											ep.postUpdate(itemName,
+													StringType.valueOf(ResponseParse[0] + "/" + ResponseParse[1]));
 										}
 									}
-								}
-								else {
+								} else {
 									String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 									ep.postUpdate(itemName, StringType.valueOf(PortParse[1]));
 								}
 							}
 						}
+
+						// -------------
+
 					} catch (IOException e) {
 						logger.debug("Connect to megadevice " + provider.getIP(itemName) + " error: "
 								+ e.getLocalizedMessage());
