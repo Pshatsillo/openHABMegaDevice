@@ -54,6 +54,8 @@ public class MegaDeviceHttpSocket extends Thread {
 					if (s.contains("m=1")) {
 						MegaDeviceBinding.updateValues(this.s.getInetAddress().getHostAddress(), getCommands,
 								OnOffType.OFF);
+					} else if (s.contains("m=2")) {
+						// do nothing -- long pressed
 					} else {
 						MegaDeviceBinding.updateValues(this.s.getInetAddress().getHostAddress(), getCommands,
 								OnOffType.ON);
