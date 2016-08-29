@@ -240,7 +240,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 
 						URL obj = new URL(Result);
 						HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-						logger.debug(Result);
+						logger.info(Result);
 
 						// optional default is GET
 						con.setRequestMethod("GET");
@@ -258,20 +258,21 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 							response.append(inputLine);
 						}
 						in.close();
-						logger.debug("input string->" + response.toString());
+						logger.info("input string->" + response.toString());
 						if ((response.toString().contains("ON"))) {
 							String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
-							if (response.toString().contains("r")) {
-								ep.postUpdate(itemName, StringType.valueOf(PortParse[1]));
+							if (PortParse[1].contains("c")) {
+								String[] value = response.toString().split("[/]");
+								ep.postUpdate(itemName, DecimalType.valueOf(value[1]));
 							} else {
 								ep.postUpdate(itemName, OnOffType.ON);
 							}
 						} else if (response.toString().contains("OFF")) {
 
 							String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
-							if (PortParse[1].contains("r")) {
+							if (PortParse[1].contains("c")) {
 								String[] value = response.toString().split("[/]");
-								ep.postUpdate(itemName, StringType.valueOf(value[1]));
+								ep.postUpdate(itemName, DecimalType.valueOf(value[1]));
 							} else {
 								ep.postUpdate(itemName, OnOffType.OFF);
 							}
@@ -361,15 +362,9 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 													StringType.valueOf(ResponseParse[0] + "/" + ResponseParse[1]));
 										}
 									}
-								} else {
-									String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
-									ep.postUpdate(itemName, StringType.valueOf(PortParse[1]));
-								}
+								} 
 							}
 						}
-
-						// -------------
-
 					} catch (IOException e) {
 						logger.debug("Connect to megadevice " + provider.getIP(itemName) + " error: "
 								+ e.getLocalizedMessage());
