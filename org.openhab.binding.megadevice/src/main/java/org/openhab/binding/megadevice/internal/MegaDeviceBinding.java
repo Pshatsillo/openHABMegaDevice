@@ -347,6 +347,10 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 										}
 									}
 								}
+								else {
+									String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
+									ep.postUpdate(itemName, StringType.valueOf(PortParse[1]));
+								}
 							}
 						}
 					} catch (IOException e) {
