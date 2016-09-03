@@ -261,7 +261,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						logger.info("input string->" + response.toString());
 						if ((response.toString().contains("ON"))) {
 							String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
-							if (PortParse[1].contains("c")) {
+							if ((PortParse.length == 2) && PortParse[1].contains("c")) {
 								String[] value = response.toString().split("[/]");
 								ep.postUpdate(itemName, DecimalType.valueOf(value[1]));
 							} else {
@@ -270,7 +270,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						} else if (response.toString().contains("OFF")) {
 
 							String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
-							if (PortParse[1].contains("c")) {
+							if ((PortParse.length == 2) && PortParse[1].contains("c")) {
 								String[] value = response.toString().split("[/]");
 								ep.postUpdate(itemName, DecimalType.valueOf(value[1]));
 							} else {
