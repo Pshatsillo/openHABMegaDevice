@@ -220,6 +220,11 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + PortParse[0] + "&cmd=get";
+							} else if (provider.getPORT(itemName).toString().contains("c")){
+								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
+
+								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
+										+ "/?pt=" + PortParse[0] + "&cmd=get";
 							} else {
 
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
