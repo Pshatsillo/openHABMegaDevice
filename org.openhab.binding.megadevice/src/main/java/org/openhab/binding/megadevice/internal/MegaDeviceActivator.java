@@ -14,12 +14,12 @@ public class MegaDeviceActivator implements BundleActivator {
 
 	
 	public void start(BundleContext context) throws Exception {
-		logger.info("MegaDevice binding 0.1.2.1 has been started.");
+		logger.info("MegaDevice binding has been started.");
 	}
 
 	
 	public void stop(BundleContext context) throws Exception {
-		logger.debug("MegaDevice binding 0.1.2.1 has been stopped.");
+		logger.debug("MegaDevice binding 0.1.2.4 has been stopped.");
 	}
 	
 	/**
