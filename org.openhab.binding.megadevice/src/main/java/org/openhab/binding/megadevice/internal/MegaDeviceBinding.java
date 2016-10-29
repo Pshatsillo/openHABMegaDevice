@@ -77,7 +77,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	 *            ConfigAdmin service
 	 */
 
-	private long delay = 1000;
+	// private long delay = 1000;
 
 	public void activate(final BundleContext bundleContext, final Map<String, Object> configuration) {
 		this.bundleContext = bundleContext;
@@ -170,7 +170,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	 */
 	@Override
 	protected void execute() {
-		// logger.info("execute: " + MegadeviceHttpServer.isRunning);
+		// logger.debug("execute: " + MegadeviceHttpServer.isRunning);
 
 		if (!MegadeviceHttpServer.isRunning) {
 			new MegadeviceHttpServer().start();
@@ -220,34 +220,27 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?tget=1";
 							} else if ((provider.getPORT(itemName).toString().contains("t"))
-									|| (provider.getPORT(itemName).toString().contains("h"))) {
-								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
-
-								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
-										+ "/?pt=" + PortParse[0] + "&cmd=get";
-							} else if (provider.getPORT(itemName).toString().contains("c")) {
+									|| (provider.getPORT(itemName).toString().contains("h"))
+									|| (provider.getPORT(itemName).toString().contains("1w"))
+									|| (provider.getPORT(itemName).toString().contains("c"))) {
 								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + PortParse[0] + "&cmd=get";
 							} else {
-
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + provider.getPORT(itemName) + "&cmd=get";
 							}
 						} else if (provider.getItemType(itemName).toString().contains("StringItem")) {
 							if (provider.getPORT(itemName).toString().contains("r")) {
 								String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
-
 								Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 										+ "/?pt=" + PortParse[0] + "&cmd=get";
 							}
-
 						} else {
 							Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName) + "/?pt="
 									+ provider.getPORT(itemName) + "&cmd=get";
 						}
-
 						URL obj = new URL(Result);
 						HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 						logger.debug(Result);
@@ -343,9 +336,13 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 									String[] ResponseParse = response.toString().split("[:]");
 									if (ResponseParse.length > 1) {
 										logger.debug(ResponseParse[1]);
-										ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[1]));
+										if (!(response.toString().equals("NA"))) {
+											ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[1]));
+										}
 									} else {
-										ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
+										if (!(response.toString().equals("NA"))) {
+											ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
+										}
 									}
 								} else if (provider.getPORT(itemName).toString().contains("tget")) {
 
@@ -521,7 +518,8 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 							Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName)
 									+ "/?tget=1";
 						} else if ((provider.getPORT(itemName).toString().contains("t"))
-								|| (provider.getPORT(itemName).toString().contains("h"))) {
+								|| (provider.getPORT(itemName).toString().contains("h"))
+								|| (provider.getPORT(itemName).toString().contains("1w"))) {
 							String[] PortParse = provider.getPORT(itemName).toString().split("[,]");
 
 							Result = "http://" + provider.getIP(itemName) + "/" + provider.password(itemName) + "/?pt="
@@ -540,13 +538,11 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 					HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 					logger.debug(Result);
 
-					logger.debug("Sleeping...");
-					try {
-						Thread.sleep(delay);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					logger.debug("Waking up...");
+					/*
+					 * logger.debug("Sleeping..."); try { Thread.sleep(delay); }
+					 * catch (InterruptedException e) { e.printStackTrace(); }
+					 * logger.debug("Waking up...");
+					 */
 					// optional default is GET
 					con.setRequestMethod("GET");
 					con.setConnectTimeout(500);
@@ -612,9 +608,13 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 								String[] ResponseParse = response.toString().split("[:]");
 								if (ResponseParse.length > 1) {
 									logger.debug(ResponseParse[1]);
-									ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[1]));
+									if (!(response.toString().equals("NA"))) {
+										ep.postUpdate(itemName, DecimalType.valueOf(ResponseParse[1]));
+									}
 								} else {
-									ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
+									if (!(response.toString().equals("NA"))) {
+										ep.postUpdate(itemName, DecimalType.valueOf(response.toString()));
+									}
 								}
 							} else if (provider.getPORT(itemName).toString().contains("tget")) {
 								if (response.length() > 0) {
