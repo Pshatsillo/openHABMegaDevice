@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2016, openHAB.org and others.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.megadevice.internal;
 
 import java.io.IOException;
@@ -6,7 +14,12 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * This class is for bringing incoming connection 
+ * 
+ * @author Petr Shatsillo
+ * @since 1.9.0
+ */
 public class MegadeviceHttpServer extends Thread {
 	private static Logger logger = LoggerFactory
 			.getLogger(MegadeviceHttpServer.class);
@@ -16,24 +29,27 @@ public class MegadeviceHttpServer extends Thread {
 
 	public void run() {
 
-		logger.info("Starting MegaHttpServer at " + portnumber + " port");
+		logger.info("Starting MegaHttpServer at {} port", portnumber);
 
 		try {
 			ss = new ServerSocket(portnumber);
 		} catch (IOException e) {
-			logger.debug("ERROR -> " + e.getMessage());
-			// e.printStackTrace();
+			logger.debug("ERROR -> {}. Can't open socket ", e.getMessage());
 		}
 		while (isRunning) {
 			Socket s = null;
 			try {
 				 s = ss != null ? ss.accept() : null;
 			} catch (IOException e) {
-				logger.debug("ERROR --> " + e.getMessage());
-				// e.printStackTrace();
+				 e.printStackTrace();
 			}
 			if (!ss.isClosed()) {
-			//	logger.info("ss not closed, starting");
+			try { 
+			Thread.sleep(10000); 
+			}
+		    catch (InterruptedException e) { 
+			e.printStackTrace(); 
+			}
 				new Thread(new MegaDeviceHttpSocket(s)).start();
 			}
 		}

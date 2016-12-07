@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2015, openHAB.org and others.
+ * Copyright (c) 2010-2016, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for parsing the binding configuration.
  * 
  * @author Petr Shatsillo
- * @since 0.0.1
+ * @since 1.9.0
  */
 public class MegaDeviceGenericBindingProvider extends
 		AbstractGenericBindingProvider implements MegaDeviceBindingProvider {
@@ -65,17 +65,12 @@ public class MegaDeviceGenericBindingProvider extends
 			MegaDeviceBindingConfig config = new MegaDeviceBindingConfig();
 			config.itemType = item.getClass();
 			String[] configParts = bindingConfig.trim().split(":");
-			// if(item instanceof SwitchItem){
 			config.password = configParts.length > 0 ? configParts[0]
 					: "NO_Pass";
 			config.ip = configParts.length > 1 ? configParts[1] : "NO_IP";
 			config.port = configParts.length > 2 ? configParts[2] : "NO_PORT";
 			config.pollinterval = configParts.length > 3 ? Integer.parseInt(configParts[3]) : 0;
 			
-			
-		//	logger.debug("binding item:" + item +". It has " + config.itemType.getName()+ " class and " + config.password + " password " +config.ip+ " ip " +config.port+ "port");
-			
-			// } //else if (item instanceof NumberItem) {
 			addBindingConfig(item, config);
 		} else {
 			logger.warn("bindingConfig is NULL (item=" + item
