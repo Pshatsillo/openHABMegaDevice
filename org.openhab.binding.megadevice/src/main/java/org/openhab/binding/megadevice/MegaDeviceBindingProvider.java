@@ -22,7 +22,7 @@ public interface MegaDeviceBindingProvider extends BindingProvider {
 	public String getPORT(String itemName);
 
 	public String password(String itemName);
-	
+
 	public int getPollInterval(String itemName);
 
 	Class<? extends Item> getItemType(String itemName);

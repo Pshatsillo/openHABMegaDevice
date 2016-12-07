@@ -14,15 +14,15 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
- * This class is for bringing incoming connection 
+ * This class is for bringing up incoming connection
  * 
  * @author Petr Shatsillo
  * @since 1.9.0
  */
 public class MegadeviceHttpServer extends Thread {
-	private static Logger logger = LoggerFactory
-			.getLogger(MegadeviceHttpServer.class);
+	private static Logger logger = LoggerFactory.getLogger(MegadeviceHttpServer.class);
 	private static int portnumber = 8989;
 	public static boolean isRunning = true;
 	private static ServerSocket ss = null;
@@ -34,22 +34,21 @@ public class MegadeviceHttpServer extends Thread {
 		try {
 			ss = new ServerSocket(portnumber);
 		} catch (IOException e) {
-			logger.debug("ERROR -> {}. Can't open socket ", e.getMessage());
+			logger.error("ERROR -> {}. Can't open socket ", e.getMessage());
 		}
 		while (isRunning) {
 			Socket s = null;
 			try {
-				 s = ss != null ? ss.accept() : null;
+				s = ss != null ? ss.accept() : null;
 			} catch (IOException e) {
-				 e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			if (!ss.isClosed()) {
-			try { 
-			Thread.sleep(10000); 
-			}
-		    catch (InterruptedException e) { 
-			e.printStackTrace(); 
-			}
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					logger.error(e.getMessage());
+				}
 				new Thread(new MegaDeviceHttpSocket(s)).start();
 			}
 		}

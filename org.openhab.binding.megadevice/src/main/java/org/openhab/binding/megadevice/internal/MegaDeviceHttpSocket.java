@@ -81,7 +81,6 @@ public class MegaDeviceHttpSocket extends Thread {
 				logger.error("ERROR: MegaDevice input server error. Restart http socket");
 				logger.error(e.getLocalizedMessage());
 				MegadeviceHttpServer.setRunningState(false);
-			//	new MegadeviceHttpServer().start();
 			}
 		}
 	}
@@ -93,7 +92,7 @@ public class MegaDeviceHttpSocket extends Thread {
 			os.write(result.getBytes());
 			os.flush();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 
