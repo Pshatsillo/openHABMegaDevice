@@ -388,7 +388,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		for (MegaDeviceBindingProvider provider : providers) {
 			logger.debug("SendCommand exec");
 			for (String itemname : provider.getItemNames()) {
-
+				String itemtype = provider.getItemType(itemname).toString();
 				if ((itemname.equals(itemName)) && (provider.getItemType(itemname).toString().contains("SwitchItem"))) {
 					if (newState.equals("ON")) {
 						state = 1;
@@ -438,9 +438,6 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-				} else {
-					logger.error("{} cannot determine type: {}", itemname, provider.getItemType(itemname).toString());
-
 				}
 			}
 		}
