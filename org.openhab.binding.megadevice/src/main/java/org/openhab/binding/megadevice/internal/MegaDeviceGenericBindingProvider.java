@@ -26,9 +26,10 @@ import org.slf4j.LoggerFactory;
  * @author Petr Shatsillo
  * @since 1.9.0
  */
-public class MegaDeviceGenericBindingProvider extends AbstractGenericBindingProvider
-		implements MegaDeviceBindingProvider {
-	private static final Logger logger = LoggerFactory.getLogger(MegaDeviceGenericBindingProvider.class);
+public class MegaDeviceGenericBindingProvider extends
+		AbstractGenericBindingProvider implements MegaDeviceBindingProvider {
+	private static final Logger logger = LoggerFactory
+			.getLogger(MegaDeviceGenericBindingProvider.class);
 
 	/**
 	 * {@inheritDoc}
@@ -40,12 +41,15 @@ public class MegaDeviceGenericBindingProvider extends AbstractGenericBindingProv
 	/**
 	 * @{inheritDoc
 	 */
-	public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof NumberItem
-				|| item instanceof StringItem)) {
-			throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
-					+ item.getClass().getSimpleName()
-					+ "', only Switch-, DimmerItems or Number are allowed - please check your *.items configuration");
+	public void validateItemType(Item item, String bindingConfig)
+			throws BindingConfigParseException {
+		if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof NumberItem || item instanceof StringItem)) {
+			throw new BindingConfigParseException(
+					"item '"
+							+ item.getName()
+							+ "' is of type '"
+							+ item.getClass().getSimpleName()
+							+ "', only Switch-, DimmerItems or Number are allowed - please check your *.items configuration");
 		}
 	}
 
@@ -53,30 +57,32 @@ public class MegaDeviceGenericBindingProvider extends AbstractGenericBindingProv
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void processBindingConfiguration(String context, Item item, String bindingConfig)
-			throws BindingConfigParseException {
+	public void processBindingConfiguration(String context, Item item,
+			String bindingConfig) throws BindingConfigParseException {
 		super.processBindingConfiguration(context, item, bindingConfig);
 
 		if (bindingConfig != null) {
 			MegaDeviceBindingConfig config = new MegaDeviceBindingConfig();
 			config.itemType = item.getClass();
 			String[] configParts = bindingConfig.trim().split(":");
-			config.password = configParts.length > 0 ? configParts[0] : "NO_Pass";
+			config.password = configParts.length > 0 ? configParts[0]
+					: "NO_Pass";
 			config.ip = configParts.length > 1 ? configParts[1] : "NO_IP";
 			config.port = configParts.length > 2 ? configParts[2] : "NO_PORT";
 			config.pollinterval = configParts.length > 3 ? Integer.parseInt(configParts[3]) : 0;
-
+			
 			addBindingConfig(item, config);
 		} else {
-			logger.warn("bindingConfig is NULL (item=" + item + ") -> process bindingConfig aborted!");
+			logger.warn("bindingConfig is NULL (item=" + item
+					+ ") -> process bindingConfig aborted!");
 		}
 	}
 
 	/**
 	 * This is a helper class holding binding specific configuration details
 	 * 
-	 * @author Petr Shatsillo
-	 * @since 1.9.0
+	 * @author Petr
+	 * @since 0.0.1
 	 */
 	static class MegaDeviceBindingConfig implements BindingConfig {
 		Class<? extends Item> itemType;
@@ -86,28 +92,37 @@ public class MegaDeviceGenericBindingProvider extends AbstractGenericBindingProv
 		public int pollinterval;
 	}
 
+	
 	public String getIP(String itemName) {
-		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs.get(itemName);
+		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
+				.get(itemName);
 		return config.ip;
 	}
 
+	
 	public String getPORT(String itemName) {
-		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs.get(itemName);
+		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
+				.get(itemName);
 		return config.port;
 	}
 
+	
 	public String password(String itemName) {
-		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs.get(itemName);
+		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
+				.get(itemName);
 		return config.password;
 	}
 
+	
 	public Class<? extends Item> getItemType(String itemName) {
-		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs.get(itemName);
+		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
+				.get(itemName);
 		return config != null ? config.itemType : null;
 	}
 
 	public int getPollInterval(String itemName) {
-		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs.get(itemName);
+		MegaDeviceBindingConfig config = (MegaDeviceBindingConfig) bindingConfigs
+				.get(itemName);
 		return config.pollinterval;
 	}
 }

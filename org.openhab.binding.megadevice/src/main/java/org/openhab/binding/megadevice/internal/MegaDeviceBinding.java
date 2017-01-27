@@ -12,6 +12,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -83,7 +85,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		// definition has the
 		// configuration-policy set to require. If set to 'optional' then the
 		// configuration may be null
-
+		
 		String portNumber = (String) configuration.get("httpserverport");
 		int portnumber = 0;
 		if (StringUtils.isNotBlank(portNumber)) {
@@ -156,7 +158,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	 */
 	@Override
 	protected void execute() {
-
+		
 		if (!MegadeviceHttpServer.isRunning) {
 			new MegadeviceHttpServer().start();
 		}
@@ -173,7 +175,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	}
 
 	private void ScanPortsScheduler() {
-
+		
 		String Result = "";
 		for (MegaDeviceBindingProvider provider : providers) {
 
@@ -337,8 +339,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 							}
 						}
 					} catch (IOException e) {
-						logger.debug("Connect to megadevice {} error: {}. Check megadevice ip address",
-								provider.getIP(itemName), e.getLocalizedMessage());
+						logger.debug("Connect to megadevice {} error: {}. Check megadevice ip address", provider.getIP(itemName), e.getLocalizedMessage());
 					}
 					lastPollTime.put(itemName, System.currentTimeMillis());
 				}
@@ -373,12 +374,12 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	}
 
 	public void setEP() {
-		MegaDeviceBinding.ep = eventPublisher;
+		this.ep = eventPublisher;
 
 	}
 
 	public void setProviders() {
-		MegaDeviceBinding.megaproviders = providers;
+		this.megaproviders = providers;
 
 	}
 
@@ -388,7 +389,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 		for (MegaDeviceBindingProvider provider : providers) {
 			logger.debug("SendCommand exec");
 			for (String itemname : provider.getItemNames()) {
-
+				
 				if ((itemname.equals(itemName)) && (provider.getItemType(itemname).toString().contains("SwitchItem"))) {
 					if (newState.equals("ON")) {
 						state = 1;
@@ -413,8 +414,15 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						if (con.getResponseCode() == 200)
 							logger.debug("OK");
 						con.disconnect();
-					} catch (Exception e) {
-						logger.error(e.getMessage());
+					} catch (MalformedURLException e) {
+						logger.debug("1" + e);
+						e.printStackTrace();
+					} catch (ProtocolException e) {
+						logger.debug("2" + e);
+						e.printStackTrace();
+					} catch (IOException e) {
+						logger.debug(e.getLocalizedMessage());
+						e.printStackTrace();
 					}
 				} else if ((itemname.equals(itemName))
 						&& (provider.getItemType(itemname).toString().contains("DimmerItem"))) {
@@ -435,11 +443,18 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						if (con.getResponseCode() == 200)
 							logger.debug("OK");
 						con.disconnect();
-					} catch (Exception e) {
-						logger.error(e.getMessage());
+					} catch (MalformedURLException e) {
+						logger.error("1" + e);
+						e.printStackTrace();
+					} catch (ProtocolException e) {
+						logger.error("2" + e);
+						e.printStackTrace();
+					} catch (IOException e) {
+						logger.error(e.getLocalizedMessage());
+						e.printStackTrace();
 					}
 				} else {
-					logger.error("{} cannot determine type: {}", itemname, provider.getItemType(itemname).toString());
+					 logger.error("{} cannot determine type: {}",itemname, provider.getItemType(itemname).toString());
 
 				}
 			}
@@ -557,9 +572,8 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 						}
 					}
 				} catch (IOException e) {
-					logger.debug("Connect to megadevice {} error: {}. Check megadevice ip address",
-							provider.getIP(itemName), e.getLocalizedMessage());
-				}
+					logger.debug("Connect to megadevice {} error: {}. Check megadevice ip address", provider.getIP(itemName), e.getLocalizedMessage());
+					}
 			}
 
 		}
@@ -569,7 +583,7 @@ public class MegaDeviceBinding extends AbstractActiveBinding<MegaDeviceBindingPr
 	public static void updateValues(String hostAddress, String[] getCommands, OnOffType onoff) {
 		if (hostAddress.equals("0:0:0:0:0:0:0:1"))
 			hostAddress = "localhost";
-		logger.debug("action at address ->> {} On_OFF: {}", hostAddress, onoff);
+		logger.debug("action at address ->> {} On_OFF: {}",hostAddress, onoff);
 		for (MegaDeviceBindingProvider provider : megaproviders) {
 			for (String itemName : provider.getItemNames()) {
 				if (provider.getItemType(itemName).toString().contains("SwitchItem")) {
