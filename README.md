@@ -176,7 +176,7 @@
      	  }
     end
 
-### Пример default.siemaps:
+### Пример default.sitemaps:
 
 
     sitemap default label= "Main Screen"{
